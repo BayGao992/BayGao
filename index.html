@@ -1,59 +1,211 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tùng gay</title>
-    <style>
-        *{
-            margin:0;
-            padding:0;
-            box-sizing:border-box;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Đọc văn bản</title>
 
-        body{
-            display:flex;
-            justify-content:center;
-            align-items:center;
-            height:100vh;
-            background:#0f172a;
-            overflow:hidden;
-            font-family:Arial, Helvetica, sans-serif;
-        }
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
 
-        h1{
-            font-size:90px;
-            color:#00e5ff;
-            text-shadow:
-                0 0 10px #00e5ff,
-                0 0 20px #00e5ff,
-                0 0 40px #00e5ff,
-                0 0 80px #00e5ff;
-            animation: glow 2s infinite alternate;
-        }
+body{
+    font-family:Arial,sans-serif;
+    background:#f0f2f5;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    min-height:100vh;
+}
 
-        @keyframes glow{
-            from{
-                transform:scale(1);
-                text-shadow:
-                    0 0 10px #00e5ff,
-                    0 0 20px #00e5ff,
-                    0 0 40px #00e5ff;
-            }
-            to{
-                transform:scale(1.08);
-                text-shadow:
-                    0 0 20px #00e5ff,
-                    0 0 40px #00e5ff,
-                    0 0 80px #00e5ff,
-                    0 0 120px #00e5ff;
-            }
-        }
-    </style>
+.box{
+    width:400px;
+    background:#fff;
+    border-radius:12px;
+    padding:20px;
+    box-shadow:0 5px 20px rgba(0,0,0,.12);
+}
+
+textarea{
+    width:100%;
+    height:110px;
+    resize:vertical;
+    border:2px solid #ddd;
+    border-radius:8px;
+    padding:10px;
+    font-size:15px;
+    font-family:inherit;
+}
+
+textarea:focus{
+    outline:none;
+    border-color:#4a6cf7;
+}
+
+.icon-area{
+    display:flex;
+    justify-content:center;
+    margin-top:15px;
+}
+
+#speaker{
+    font-size:42px;
+    cursor:pointer;
+    user-select:none;
+    transition:.25s;
+}
+
+#speaker:hover{
+    transform:scale(1.1);
+}
+
+.playing{
+    animation:pulse .8s infinite;
+    color:#4a6cf7;
+}
+
+@keyframes pulse{
+    0%{transform:scale(1);}
+    50%{transform:scale(1.15);}
+    100%{transform:scale(1);}
+}
+
+.status{
+    margin-top:10px;
+    text-align:center;
+    color:#777;
+    font-size:14px;
+}
+</style>
+
 </head>
 <body>
 
-<h1>Tùng Gay:))</h1>
+<div class="box">
+
+<textarea id="text">Xin chào, đây là văn bản mẫu.</textarea>
+
+<div class="icon-area">
+<span id="speaker">🔊</span>
+</div>
+
+<div class="status" id="status">
+Nhấn vào biểu tượng để đọc
+</div>
+
+</div>
+
+<script>
+
+const textarea=document.getElementById("text");
+const speaker=document.getElementById("speaker");
+const status=document.getElementById("status");
+
+let voices=[];
+let speaking=false;
+
+speechSynthesis.onvoiceschanged=()=>{
+    voices=speechSynthesis.getVoices();
+};
+
+voices=speechSynthesis.getVoices();
+
+function getVietnameseVoice(){
+
+    return voices.find(v=>
+        v.lang==="vi-VN" ||
+        v.lang.startsWith("vi")
+    );
+
+}
+
+function reset(){
+
+    speaking=false;
+    speaker.classList.remove("playing");
+    status.textContent="Nhấn vào biểu tượng để đọc";
+
+}
+
+function speak(){
+
+    const text=textarea.value.trim();
+
+    if(text===""){
+        status.textContent="⚠️ Vui lòng nhập văn bản.";
+        return;
+    }
+
+    speechSynthesis.cancel();
+
+    const utter=new SpeechSynthesisUtterance(text);
+
+    utter.lang="vi-VN";
+    utter.rate=0.95;
+    utter.pitch=1;
+    utter.volume=1;
+
+    const voice=getVietnameseVoice();
+
+    if(voice){
+        utter.voice=voice;
+    }
+
+    utter.onstart=()=>{
+
+        speaking=true;
+        speaker.classList.add("playing");
+        status.textContent="🔊 Đang đọc...";
+
+    };
+
+    utter.onend=()=>{
+
+        speaking=false;
+        speaker.classList.remove("playing");
+        status.textContent="✅ Đã đọc xong";
+
+    };
+
+    utter.onerror=()=>{
+
+        speaking=false;
+        speaker.classList.remove("playing");
+        status.textContent="❌ Không thể đọc văn bản.";
+
+    };
+
+    setTimeout(()=>{
+        speechSynthesis.speak(utter);
+    },100);
+
+}
+
+speaker.addEventListener("click",()=>{
+
+    if(speaking){
+
+        speechSynthesis.cancel();
+        reset();
+
+    }else{
+
+        speak();
+
+    }
+
+});
+
+window.addEventListener("beforeunload",()=>{
+
+    speechSynthesis.cancel();
+
+});
+
+</script>
 
 </body>
 </html>
