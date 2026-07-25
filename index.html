@@ -1,1 +1,156 @@
-<!DOCTYPE html><html lang="vi"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Đọc văn bản</title><style>*{margin:0;padding:0;box-sizing:border-box;}body{font-family:Arial,sans-serif;background:#f0f2f5;display:flex;justify-content:center;align-items:center;min-height:100vh;}.box{width:400px;background:#fff;border-radius:12px;padding:20px;box-shadow:0 5px 20px rgba(0,0,0,.12);}textarea{width:100%;height:110px;resize:vertical;border:2px solid #ddd;border-radius:8px;padding:10px;font-size:15px;font-family:inherit;}textarea:focus{outline:none;border-color:#4a6cf7;}.icon-area{display:flex;justify-content:center;margin-top:15px;}#speaker{font-size:42px;cursor:pointer;user-select:none;transition:.25s;}#speaker:hover{transform:scale(1.1);}.playing{animation:pulse .8s infinite;color:#4a6cf7;}@keyframes pulse{0%{transform:scale(1);}50%{transform:scale(1.15);}100%{transform:scale(1);}}.status{margin-top:10px;text-align:center;color:#777;font-size:14px;}</style></head><body><div class="box"><textarea id="text">Hello</textarea><div class="icon-area"><span id="speaker">🔊</span></div><div class="status" id="status">Nhấn vào biểu tượng để đọc</div></div><script>const textarea=document.getElementById("text");const speaker=document.getElementById("speaker");const status=document.getElementById("status");let voices=[];let speaking=false;speechSynthesis.onvoiceschanged=()=>{voices=speechSynthesis.getVoices();};voices=speechSynthesis.getVoices();function getVietnameseVoice(){return voices.find(v=>v.lang==="vi-VN"||v.lang.startsWith("vi"));}function reset(){speaking=false;speaker.classList.remove("playing");status.textContent="Nhấn vào biểu tượng để đọc";}function speak(){const text=textarea.value.trim();if(text===""){status.textContent="⚠️ Vui lòng nhập văn bản.";return;}speechSynthesis.cancel();const utter=new SpeechSynthesisUtterance(text);utter.lang="vi-VN";utter.rate=0.95;utter.pitch=1;utter.volume=1;const voice=getVietnameseVoice();if(voice){utter.voice=voice;}utter.onstart=()=>{speaking=true;speaker.classList.add("playing");status.textContent="🔊 Đang đọc...";};utter.onend=()=>{speaking=false;speaker.classList.remove("playing");status.textContent="✅ Đã đọc xong";};utter.onerror=()=>{speaking=false;speaker.classList.remove("playing");status.textContent="❌ Không thể đọc văn bản.";};setTimeout(()=>{speechSynthesis.speak(utter);},100);}speaker.addEventListener("click",()=>{if(speaking){speechSynthesis.cancel();reset();}else{speak();}});window.addEventListener("beforeunload",()=>{speechSynthesis.cancel();});</script></body></html>
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bạn có thông minh không?</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background: #f0f2f5;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            background: white;
+            padding: 50px 60px 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            text-align: center;
+            max-width: 500px;
+            width: 90%;
+        }
+        h1 {
+            font-size: 32px;
+            color: #1a1a2e;
+            margin-bottom: 30px;
+            font-weight: bold;
+        }
+        .btn-group {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin: 20px 0 30px;
+            position: relative;
+            min-height: 80px;
+        }
+        .btn {
+            padding: 12px 40px;
+            font-size: 22px;
+            font-weight: bold;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: 0.2s;
+            min-width: 100px;
+        }
+        .btn-yes {
+            background: #4CAF50;
+            color: white;
+        }
+        .btn-yes:hover {
+            background: #45a049;
+            transform: scale(1.05);
+        }
+        .btn-no {
+            background: #f44336;
+            color: white;
+            position: relative;
+            transition: left 0.15s ease, top 0.15s ease;
+        }
+        .message {
+            font-size: 18px;
+            color: #333;
+            margin-top: 15px;
+            min-height: 30px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Bạn có thông minh không?</h1>
+        
+        <div class="btn-group" id="btnGroup">
+            <button class="btn btn-yes" id="yesBtn">Yes</button>
+            <button class="btn btn-no" id="noBtn">No</button>
+        </div>
+        
+        <div class="message" id="message">Nhấn Yes nếu bạn tự tin</div>
+    </div>
+
+    <script>
+        const yesBtn = document.getElementById('yesBtn');
+        const noBtn = document.getElementById('noBtn');
+        const message = document.getElementById('message');
+        const group = document.getElementById('btnGroup');
+
+        let canMove = true;
+
+        function moveNoButton() {
+            if (!canMove) return;
+
+            const groupRect = group.getBoundingClientRect();
+            const noRect = noBtn.getBoundingClientRect();
+
+            const btnW = noRect.width;
+            const btnH = noRect.height;
+            const padding = 5;
+
+            const maxX = groupRect.width - btnW - padding * 2;
+            const maxY = groupRect.height - btnH - padding * 2;
+
+            if (maxX < 0 || maxY < 0) return;
+
+            const x = Math.random() * maxX;
+            const y = Math.random() * maxY;
+
+            noBtn.style.position = 'absolute';
+            noBtn.style.left = x + 'px';
+            noBtn.style.top = y + 'px';
+            noBtn.style.margin = '0';
+
+            // Khóa di chuyển trong 150ms để tránh giật
+            canMove = false;
+            setTimeout(() => {
+                canMove = true;
+            }, 150);
+        }
+
+        // Khi di chuột vào nút No -> chạy
+        noBtn.addEventListener('mouseenter', moveNoButton);
+        
+        // Hỗ trợ trên điện thoại (chạm)
+        noBtn.addEventListener('touchstart', function(e) {
+            e.preventDefault();
+            moveNoButton();
+        }, { passive: false });
+
+        yesBtn.addEventListener('click', function() {
+            const msgs = [
+                'Đúng rồi! Bạn thông minh đấy! 🎉',
+                'Tuyệt vời! Bạn rất thông minh!',
+                'Chắc chắn rồi! Bạn là người thông minh!',
+                'Yes! Bạn thông minh hơn bạn nghĩ!'
+            ];
+            message.textContent = msgs[Math.floor(Math.random() * msgs.length)];
+            
+            // Đưa nút No về vị trí cũ
+            noBtn.style.position = '';
+            noBtn.style.left = '';
+            noBtn.style.top = '';
+            noBtn.style.margin = '';
+            canMove = true;
+        });
+    </script>
+</body>
+</html>
