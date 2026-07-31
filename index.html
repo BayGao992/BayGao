@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🔑 Tạo và Kiểm tra Key</title>
+    <title>🔑 Quản lý Key</title>
     <style>
         * {
             margin: 0;
@@ -22,7 +22,7 @@
         }
 
         .container {
-            max-width: 800px;
+            max-width: 900px;
             width: 100%;
             background: white;
             padding: 30px;
@@ -432,12 +432,13 @@
                 }
 
                 const response = await fetch(`${API_URL}${endpoint}`, options);
-                const result = await response.json();
-
+                
                 if (!response.ok) {
-                    throw new Error(result.message || 'Có lỗi xảy ra');
+                    const errorData = await response.json();
+                    throw new Error(errorData.message || `Lỗi HTTP ${response.status}`);
                 }
 
+                const result = await response.json();
                 return result;
             } catch (error) {
                 console.error('API Error:', error);
@@ -456,7 +457,7 @@
                 }
             } catch (error) {
                 console.error('Lỗi tải keys:', error);
-                showMessage('Không thể tải danh sách keys', 'error');
+                showMessage('Không thể tải danh sách keys: ' + error.message, 'error');
             }
             return false;
         }
@@ -556,7 +557,6 @@
         async function checkKey() {
             const keyValue = checkKeyInput.value.trim();
             if (!keyValue) {
-                showCheckResult({ exists: false });
                 checkResult.className = 'result-box show error';
                 checkResult.innerHTML = '<strong>⚠️ Vui lòng nhập key cần kiểm tra!</strong>';
                 return;
@@ -590,7 +590,7 @@
                 isConnected = false;
                 statusDot.className = 'status-dot disconnected';
                 statusText.textContent = '❌ Mất kết nối';
-                showMessage('Không thể kết nối server', 'error');
+                showMessage('Không thể kết nối server: ' + error.message, 'error');
             } finally {
                 checkConnectionBtn.disabled = false;
             }
@@ -643,6 +643,7 @@
         console.log('🚀 Ứng dụng đã sẵn sàng!');
         console.log(`📡 API URL: ${API_URL}`);
         console.log('📝 Tạo key thủ công không giới hạn ký tự');
+        console.log('📂 Không có dữ liệu mẫu');
     </script>
 </body>
 </html>
