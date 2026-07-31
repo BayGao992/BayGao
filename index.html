@@ -3,154 +3,646 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bạn có thông minh không?</title>
+    <title>🔑 Tạo và Kiểm tra Key</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
+
         body {
-            background: #f0f2f5;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            font-family: Arial, sans-serif;
+            padding: 20px;
         }
+
         .container {
+            max-width: 800px;
+            width: 100%;
             background: white;
-            padding: 50px 60px 40px;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            text-align: center;
-            max-width: 500px;
-            width: 90%;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
         }
+
         h1 {
-            font-size: 32px;
-            color: #1a1a2e;
-            margin-bottom: 30px;
-            font-weight: bold;
-        }
-        .btn-group {
-            display: flex;
-            justify-content: center;
-            gap: 40px;
-            margin: 20px 0 30px;
-            position: relative;
-            min-height: 80px;
-        }
-        .btn {
-            padding: 12px 40px;
-            font-size: 22px;
-            font-weight: bold;
-            border: none;
-            border-radius: 50px;
-            cursor: pointer;
-            transition: 0.2s;
-            min-width: 100px;
-        }
-        .btn-yes {
-            background: #4CAF50;
-            color: white;
-        }
-        .btn-yes:hover {
-            background: #45a049;
-            transform: scale(1.05);
-        }
-        .btn-no {
-            background: #f44336;
-            color: white;
-            position: relative;
-            transition: left 0.15s ease, top 0.15s ease;
-        }
-        .message {
-            font-size: 18px;
+            text-align: center;
             color: #333;
-            margin-top: 15px;
-            min-height: 30px;
-            padding: 10px;
+            margin-bottom: 10px;
+            font-size: 2.2em;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        .section {
             background: #f8f9fa;
+            padding: 20px;
             border-radius: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #e9ecef;
+        }
+
+        .section h2 {
+            color: #495057;
+            margin-bottom: 15px;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .input-group input {
+            flex: 1;
+            padding: 12px 15px;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+            min-width: 200px;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .input-group input:disabled {
+            background: #e9ecef;
+            cursor: not-allowed;
+        }
+
+        button {
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: transform 0.2s, box-shadow 0.2s;
+            white-space: nowrap;
+        }
+
+        button:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        button.danger {
+            background: linear-gradient(135deg, #dc3545, #c82333);
+        }
+
+        button.danger:hover:not(:disabled) {
+            box-shadow: 0 5px 20px rgba(220, 53, 69, 0.4);
+        }
+
+        button.success {
+            background: linear-gradient(135deg, #28a745, #218838);
+        }
+
+        button.success:hover:not(:disabled) {
+            box-shadow: 0 5px 20px rgba(40, 167, 69, 0.4);
+        }
+
+        button.warning {
+            background: linear-gradient(135deg, #ffc107, #e0a800);
+            color: #333;
+        }
+
+        button.warning:hover:not(:disabled) {
+            box-shadow: 0 5px 20px rgba(255, 193, 7, 0.4);
+        }
+
+        .result-box {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .result-box.show {
+            display: block;
+        }
+
+        .result-box.success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+
+        .result-box.error {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+
+        .result-box.info {
+            background: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+        }
+
+        .status-dot {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+
+        .status-dot.connected {
+            background: #28a745;
+        }
+
+        .status-dot.disconnected {
+            background: #dc3545;
+        }
+
+        .status-dot.checking {
+            background: #ffc107;
+        }
+
+        .server-status {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 15px;
+            background: white;
+            border-radius: 8px;
+            margin-top: 10px;
+            border: 1px solid #e9ecef;
+        }
+
+        .server-status .status-text {
+            flex: 1;
+            font-size: 14px;
+            color: #333;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        th {
+            background: #667eea;
+            color: white;
+            padding: 10px;
+            text-align: left;
+            font-size: 14px;
+        }
+
+        td {
+            padding: 10px;
+            border-bottom: 1px solid #e9ecef;
+            font-size: 14px;
+        }
+
+        tr:hover {
+            background: #f8f9fa;
+        }
+
+        .status-badge {
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-badge.active {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-badge.inactive {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .status-badge.pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .empty {
+            text-align: center;
+            color: #999;
+            padding: 30px;
+        }
+
+        .actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .count {
+            margin-left: auto;
+            font-weight: bold;
+            color: #333;
+            font-size: 14px;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 15px;
+            }
+
+            .input-group {
+                flex-direction: column;
+            }
+
+            .actions {
+                flex-direction: column;
+            }
+
+            .count {
+                margin-left: 0;
+                text-align: center;
+            }
+
+            table {
+                font-size: 12px;
+            }
+
+            th, td {
+                padding: 8px 6px;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Bạn có thông minh không?</h1>
-        
-        <div class="btn-group" id="btnGroup">
-            <button class="btn btn-yes" id="yesBtn">Yes</button>
-            <button class="btn btn-no" id="noBtn">No</button>
+        <h1>🔑 QUẢN LÝ KEY</h1>
+        <p class="subtitle">Tạo và kiểm tra key thủ công</p>
+
+        <!-- Thông báo -->
+        <div class="result-box" id="messageBox">
+            <span id="messageText"></span>
         </div>
-        
-        <div class="message" id="message">Nhấn Yes nếu bạn tự tin</div>
+
+        <!-- Phần tạo key thủ công -->
+        <div class="section">
+            <h2>📝 Tạo key thủ công</h2>
+            <div class="input-group">
+                <input type="text" id="manualKey" placeholder="Nhập key bất kỳ (VD: ABC123XYZ)">
+                <button id="addKeyBtn">➕ Thêm key</button>
+            </div>
+        </div>
+
+        <!-- Phần kiểm tra key -->
+        <div class="section">
+            <h2>🔍 Kiểm tra key</h2>
+            <div class="input-group">
+                <input type="text" id="checkKeyInput" placeholder="Nhập key cần kiểm tra">
+                <button id="checkKeyBtn" class="success">🔍 Kiểm tra</button>
+            </div>
+            <div id="checkResult" class="result-box"></div>
+        </div>
+
+        <!-- Danh sách key -->
+        <div class="section">
+            <h2>📋 Danh sách key</h2>
+            <div style="max-height: 400px; overflow-y: auto;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Key</th>
+                            <th>Trạng thái</th>
+                            <th>Thời gian tạo</th>
+                            <th>Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody id="keyList">
+                        <tr>
+                            <td colspan="5" class="empty">🔄 Đang tải...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="actions">
+                <button id="refreshBtn">🔄 Làm mới</button>
+                <button id="deleteAllBtn" class="danger">🗑️ Xóa tất cả</button>
+                <span class="count" id="keyCount">Tổng: 0</span>
+            </div>
+        </div>
+
+        <!-- Trạng thái server -->
+        <div class="section">
+            <h2>🔌 Trạng thái server</h2>
+            <div class="server-status">
+                <span class="status-dot disconnected" id="statusDot"></span>
+                <span class="status-text" id="statusText">Chưa kết nối</span>
+                <button id="checkConnectionBtn">Kiểm tra</button>
+            </div>
+        </div>
     </div>
 
     <script>
-        const yesBtn = document.getElementById('yesBtn');
-        const noBtn = document.getElementById('noBtn');
-        const message = document.getElementById('message');
-        const group = document.getElementById('btnGroup');
+        // ===== CẤU HÌNH =====
+        const API_URL = 'https://dbsepay.vercel.app/api';
 
-        let canMove = true;
+        // ===== DOM ELEMENTS =====
+        const manualKeyInput = document.getElementById('manualKey');
+        const addKeyBtn = document.getElementById('addKeyBtn');
+        const checkKeyInput = document.getElementById('checkKeyInput');
+        const checkKeyBtn = document.getElementById('checkKeyBtn');
+        const checkResult = document.getElementById('checkResult');
+        const keyList = document.getElementById('keyList');
+        const refreshBtn = document.getElementById('refreshBtn');
+        const deleteAllBtn = document.getElementById('deleteAllBtn');
+        const keyCount = document.getElementById('keyCount');
+        const checkConnectionBtn = document.getElementById('checkConnectionBtn');
+        const statusDot = document.getElementById('statusDot');
+        const statusText = document.getElementById('statusText');
+        const messageBox = document.getElementById('messageBox');
+        const messageText = document.getElementById('messageText');
 
-        function moveNoButton() {
-            if (!canMove) return;
+        // ===== DATA =====
+        let keys = [];
+        let isConnected = false;
 
-            const groupRect = group.getBoundingClientRect();
-            const noRect = noBtn.getBoundingClientRect();
+        // ===== FUNCTIONS =====
 
-            const btnW = noRect.width;
-            const btnH = noRect.height;
-            const padding = 5;
-
-            const maxX = groupRect.width - btnW - padding * 2;
-            const maxY = groupRect.height - btnH - padding * 2;
-
-            if (maxX < 0 || maxY < 0) return;
-
-            const x = Math.random() * maxX;
-            const y = Math.random() * maxY;
-
-            noBtn.style.position = 'absolute';
-            noBtn.style.left = x + 'px';
-            noBtn.style.top = y + 'px';
-            noBtn.style.margin = '0';
-
-            // Khóa di chuyển trong 150ms để tránh giật
-            canMove = false;
+        // Hiển thị thông báo
+        function showMessage(text, type = 'info') {
+            messageBox.className = 'result-box show ' + type;
+            messageText.textContent = text;
             setTimeout(() => {
-                canMove = true;
-            }, 150);
+                messageBox.className = 'result-box';
+            }, 5000);
         }
 
-        // Khi di chuột vào nút No -> chạy
-        noBtn.addEventListener('mouseenter', moveNoButton);
-        
-        // Hỗ trợ trên điện thoại (chạm)
-        noBtn.addEventListener('touchstart', function(e) {
-            e.preventDefault();
-            moveNoButton();
-        }, { passive: false });
+        // Hiển thị kết quả kiểm tra
+        function showCheckResult(data) {
+            checkResult.className = 'result-box show';
+            if (data.exists) {
+                checkResult.className = 'result-box show success';
+                checkResult.innerHTML = `
+                    <strong>✅ Key tồn tại!</strong><br>
+                    <strong>Key:</strong> ${data.data.key}<br>
+                    <strong>Trạng thái:</strong> ${data.data.status === 'active' ? '🟢 Hoạt động' : '🔴 Không hoạt động'}<br>
+                    <strong>Thời gian tạo:</strong> ${new Date(data.data.createdAt).toLocaleString('vi-VN')}
+                `;
+            } else {
+                checkResult.className = 'result-box show error';
+                checkResult.innerHTML = `<strong>❌ Key không tồn tại!</strong>`;
+            }
+        }
 
-        yesBtn.addEventListener('click', function() {
-            const msgs = [
-                'Đúng rồi! Bạn thông minh đấy! 🎉',
-                'Tuyệt vời! Bạn rất thông minh!',
-                'Chắc chắn rồi! Bạn là người thông minh!',
-                'Yes! Bạn thông minh hơn bạn nghĩ!'
-            ];
-            message.textContent = msgs[Math.floor(Math.random() * msgs.length)];
-            
-            // Đưa nút No về vị trí cũ
-            noBtn.style.position = '';
-            noBtn.style.left = '';
-            noBtn.style.top = '';
-            noBtn.style.margin = '';
-            canMove = true;
+        // Gọi API
+        async function callAPI(endpoint, method = 'GET', data = null) {
+            try {
+                const options = {
+                    method: method,
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                };
+
+                if (data) {
+                    options.body = JSON.stringify(data);
+                }
+
+                const response = await fetch(`${API_URL}${endpoint}`, options);
+                const result = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(result.message || 'Có lỗi xảy ra');
+                }
+
+                return result;
+            } catch (error) {
+                console.error('API Error:', error);
+                throw error;
+            }
+        }
+
+        // Tải danh sách keys
+        async function loadKeys() {
+            try {
+                const result = await callAPI('/keys');
+                if (result.success) {
+                    keys = result.data || [];
+                    renderKeys();
+                    return true;
+                }
+            } catch (error) {
+                console.error('Lỗi tải keys:', error);
+                showMessage('Không thể tải danh sách keys', 'error');
+            }
+            return false;
+        }
+
+        // Hiển thị danh sách keys
+        function renderKeys() {
+            if (!keys || keys.length === 0) {
+                keyList.innerHTML = `
+                    <tr>
+                        <td colspan="5" class="empty">📭 Chưa có key nào</td>
+                    </tr>
+                `;
+                keyCount.textContent = 'Tổng: 0';
+                return;
+            }
+
+            keyList.innerHTML = keys.map((key, index) => `
+                <tr>
+                    <td>${index + 1}</td>
+                    <td><strong>${key.key}</strong></td>
+                    <td>
+                        <span class="status-badge ${key.status === 'active' ? 'active' : 'inactive'}">
+                            ${key.status === 'active' ? '🟢 Hoạt động' : '🔴 Không hoạt động'}
+                        </span>
+                    </td>
+                    <td>${key.createdAt ? new Date(key.createdAt).toLocaleString('vi-VN') : 'N/A'}</td>
+                    <td>
+                        <button class="danger" onclick="deleteKey('${key.id}')" style="padding: 5px 10px; font-size: 12px;">
+                            🗑️
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+
+            keyCount.textContent = `Tổng: ${keys.length}`;
+        }
+
+        // Thêm key
+        async function addKey(keyValue) {
+            if (!keyValue || keyValue.trim() === '') {
+                showMessage('⚠️ Vui lòng nhập key!', 'error');
+                return false;
+            }
+
+            try {
+                const result = await callAPI('/keys', 'POST', {
+                    key: keyValue.trim(),
+                    status: 'active'
+                });
+
+                if (result.success) {
+                    showMessage('✅ Thêm key thành công!', 'success');
+                    manualKeyInput.value = '';
+                    await loadKeys();
+                    return true;
+                }
+            } catch (error) {
+                console.error('Lỗi thêm key:', error);
+                showMessage('❌ ' + error.message, 'error');
+            }
+            return false;
+        }
+
+        // Xóa key (gọi từ HTML)
+        async function deleteKey(id) {
+            if (!confirm('Bạn có chắc muốn xóa key này?')) return;
+
+            try {
+                const result = await callAPI(`/keys/${id}`, 'DELETE');
+                if (result.success) {
+                    showMessage('✅ Xóa key thành công!', 'success');
+                    await loadKeys();
+                }
+            } catch (error) {
+                console.error('Lỗi xóa key:', error);
+                showMessage('❌ ' + error.message, 'error');
+            }
+        }
+
+        // Xóa tất cả keys
+        async function deleteAllKeys() {
+            if (!confirm('Bạn có chắc muốn xóa TẤT CẢ key?')) return;
+
+            try {
+                const result = await callAPI('/keys', 'DELETE');
+                if (result.success) {
+                    showMessage('✅ Đã xóa tất cả keys!', 'success');
+                    await loadKeys();
+                }
+            } catch (error) {
+                console.error('Lỗi xóa tất cả:', error);
+                showMessage('❌ ' + error.message, 'error');
+            }
+        }
+
+        // Kiểm tra key
+        async function checkKey() {
+            const keyValue = checkKeyInput.value.trim();
+            if (!keyValue) {
+                showCheckResult({ exists: false });
+                checkResult.className = 'result-box show error';
+                checkResult.innerHTML = '<strong>⚠️ Vui lòng nhập key cần kiểm tra!</strong>';
+                return;
+            }
+
+            try {
+                const result = await callAPI('/check-key', 'POST', { key: keyValue });
+                showCheckResult(result);
+            } catch (error) {
+                console.error('Lỗi kiểm tra key:', error);
+                checkResult.className = 'result-box show error';
+                checkResult.innerHTML = `<strong>❌ Lỗi: ${error.message}</strong>`;
+            }
+        }
+
+        // Kiểm tra kết nối server
+        async function checkConnection() {
+            statusDot.className = 'status-dot checking';
+            statusText.textContent = 'Đang kiểm tra...';
+            checkConnectionBtn.disabled = true;
+
+            try {
+                const result = await callAPI('/health');
+                if (result.status === 'ok') {
+                    isConnected = true;
+                    statusDot.className = 'status-dot connected';
+                    statusText.textContent = `✅ Đã kết nối (${result.totalKeys} keys)`;
+                    await loadKeys();
+                }
+            } catch (error) {
+                isConnected = false;
+                statusDot.className = 'status-dot disconnected';
+                statusText.textContent = '❌ Mất kết nối';
+                showMessage('Không thể kết nối server', 'error');
+            } finally {
+                checkConnectionBtn.disabled = false;
+            }
+        }
+
+        // ===== EVENT LISTENERS =====
+
+        // Thêm key
+        addKeyBtn.addEventListener('click', () => {
+            addKey(manualKeyInput.value);
         });
+
+        manualKeyInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                addKeyBtn.click();
+            }
+        });
+
+        // Kiểm tra key
+        checkKeyBtn.addEventListener('click', checkKey);
+
+        checkKeyInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                checkKeyBtn.click();
+            }
+        });
+
+        // Làm mới danh sách
+        refreshBtn.addEventListener('click', () => {
+            loadKeys();
+        });
+
+        // Xóa tất cả
+        deleteAllBtn.addEventListener('click', deleteAllKeys);
+
+        // Kiểm tra kết nối
+        checkConnectionBtn.addEventListener('click', checkConnection);
+
+        // Export functions cho HTML
+        window.deleteKey = deleteKey;
+
+        // ===== KHỞI TẠO =====
+
+        // Tải dữ liệu
+        loadKeys();
+
+        // Tự động kiểm tra kết nối
+        setTimeout(checkConnection, 500);
+
+        console.log('🚀 Ứng dụng đã sẵn sàng!');
+        console.log(`📡 API URL: ${API_URL}`);
+        console.log('📝 Tạo key thủ công không giới hạn ký tự');
     </script>
 </body>
 </html>
